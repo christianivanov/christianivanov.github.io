@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+ <title>ChristianIvanov</title>
+ <link href="http://localhost:4000/atom.xml" rel="self"/>
+ <link href="http://localhost:4000/"/>
+ <updated>2018-10-12T13:33:26+02:00</updated>
+ <id>http://localhost:4000</id>
+ <author>
+   <name>Christian Ivanov</name>
+   <email></email>
+ </author>
+
+ 
+ <entry>
+   <title>Hola mundo!</title>
+   <link href="http://localhost:4000/2018/10/12/Hola-mundo!/"/>
+   <updated>2018-10-12T00:00:00+02:00</updated>
+   <id>http://localhost:4000/2018/10/12/Hola-mundo!</id>
+   <content type="html">&lt;p&gt;Bienvenidos a mi blog personal… (en construcción)&lt;/p&gt;
+</content>
+ </entry>
+ 
+
+</feed>

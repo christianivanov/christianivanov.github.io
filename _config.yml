@@ -1,0 +1,48 @@
+# Dependencies
+markdown:         redcarpet
+pygments:         true
+
+# Permalinks
+permalink:        pretty
+
+# Setup
+title:            ChristianIvanov
+tagline:          'Home'
+description:      'Blog personal de Christian Ivanov,  desarrollador de Software y apasionado de las nuevas tecnologías. Sígueme en twitter <a href="https://twitter.com/ChristianIvanov" target="_blank">@ChristianIvanov</a>.'
+url:              http://lanyon.getpoole.com
+
+author:
+  name:           'Christian Ivanov'
+  url:            https://twitter.com/ChritianIvanov
+
+paginate:         5
+
+# Custom vars
+version:          2.0.0
+
+github:
+  repo:           https://github.com/ChristianIvanov
+
+# Build settings
+markdown: kramdown
+paginate: 5
+paginate_path: "/page:num/"
+inter_post_navigation: true
+
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      author: "Christian Ivanov"
+
+
+# External gems
+gems:
+  - jekyll-sitemap
+  - jekyll-paginate
+  - jemoji
+  - jekyll-seo-tag
+
+exclude:
+  - "/vendor/"
