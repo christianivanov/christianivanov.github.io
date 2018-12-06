@@ -4,13 +4,83 @@
  <title>ChristianIvanov</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2018-10-13T17:31:14+02:00</updated>
+ <updated>2018-12-06T18:36:32+01:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Christian Ivanov</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Introducción a TypeScript (Primera parte)</title>
+   <link href="http://localhost:4000/2018/12/06/Introduccio-n-a-typescript/"/>
+   <updated>2018-12-06T00:00:00+01:00</updated>
+   <id>http://localhost:4000/2018/12/06/Introducción-a-typescript</id>
+   <content type="html">&lt;p&gt;En este post me gustaría hacer una breve introducción a TypeScript y analizar los motivos por los que está teniendo tanta popularidad en la comunidad. TypeScript es una tecnología creada y mantenida por Microsoft, de la mano de &lt;a href=&quot;https://es.wikipedia.org/wiki/Anders_Hejlsberg&quot;&gt;Anders Hejlsberg&lt;/a&gt;. En la actualidad, su última versión publicada es la &lt;a href=&quot;https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-2.html&quot;&gt;3.2&lt;/a&gt;, potencia y versatilidad desde sus inicios, TypeScript es ideal para usarlo en proyectos robustos y escalables, ya que es un &lt;i&gt;superseteado&lt;/i&gt; de JavaScript en el que se añaden el tipado estático y los objetos basados en clases. Además de todo lo mencionado con anterioridad, es &lt;a href=&quot;https://github.com/Microsoft/TypeScript&quot;&gt;open source&lt;/a&gt;. A modo de resumen, empecemos citando algunas características destacadas del lenguaje:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Orientada a objetos: soporta todos los elementos de dicho paradigma de programación (clases, interfaces, herencia, polimorfismo, etcétera).&lt;/li&gt;
+  &lt;li&gt;Lenguaje tipado: clasificación de las variables según los tipos de datos que usan.&lt;/li&gt;
+  &lt;li&gt;Basado en estándares (ECMAScript).&lt;/li&gt;
+  &lt;li&gt;Compilado: puedes detectar errores antes de ejecución (no interpreta). Convierte código a JavaScript.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Para programar en TypeScript lo más recomendable es usar &lt;a href=&quot;https://code.visualstudio.com&quot;&gt;Visual Studio Code&lt;/a&gt;, el editor de código basado en Electron y creado por Microsoft ofrece soporte para todas las versiones del lenguaje y, además, añade: Git integrado, debugging, IntelliSense y extensiones. Honestamente, para mí es uno de los mejores productos que ha hecho Microsoft en la última década.&lt;/p&gt;
+
+&lt;p&gt;¿Por qué usar TypeScript?&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Ideal para proyectos escalables, orientado a un entorno empresarial. TypeScript está por grandes empresas y grandes proyectos, un claro de ejemplo de ello es Google, que usa para el desarrollo de Angular dicho lenguaje.&lt;/li&gt;
+  &lt;li&gt;La &lt;a href=&quot;https://www.typescriptlang.org/docs/home.html&quot;&gt;documentación&lt;/a&gt; que existe sobre el proyecto es bastante y de calidad.&lt;/li&gt;
+  &lt;li&gt;Para frontend y backend: si vienes de desarrollar en backend (como es mi caso), con TypeScript te sentirás como en casa. El lenguaje permite homogeneidad en este aspecto, aunque suela usarse para front, también puedes usarlo en el backend de tu aplicación.&lt;/li&gt;
+  &lt;li&gt;La amplia y vibrante comunidad que hay detrás de TypeScript, son unos de los motivos fundamentales del éxito del lenguaje.&lt;/li&gt;
+  &lt;li&gt;Interoperable con JavaScript.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Los comandos básicos que debes saber para comenzar con TypeScript son:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Instalar TypeScript, para ello tenemos que tener previamente instalado npm y Node:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;nx&quot;&gt;npm&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;install&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;g&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;typescript&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Para compilar debemos usar el comando:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;nx&quot;&gt;tsc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;nombre_de_archivo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;ts&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Entre las características principales del lenguaje, hemos destacado la introducción de clases, interfaces y funciones, elementos básicos en el paradigma de programación orientado a objetos. Dichos elementos en TypeScript, se presenta de la siguiente forma:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;&lt;span class=&quot;nx&quot;&gt;lass&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Student&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;fullName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;constructor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kr&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;middleInitial&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;fullName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;firstName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;middleInitial&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kr&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Person&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;firstName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nl&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;greeter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;person&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hello, &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;firstName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot; &quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;lastName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Student&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Jane&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;M.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;User&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;document&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;innerHTML&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;greeter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;En la página oficial de TypeScript podemos mirar los &lt;a href=&quot;https://www.typescriptlang.org/docs/handbook/basic-types.html&quot;&gt;tipos de datos básicos&lt;/a&gt; que pueden usarse, siendo los mismos que se pueden usar en JavaScript. Se destaca el tipo any, ideal para utilizarlo con librería de terceros en JavaScript que no están adaptadas a TypeScript, eso sí, no muy recomendado si quieres evitar problemas de mutabilidad. Otro a destacatar es el tipo tuple, que representa una colección de valores de varios tipos.&lt;/p&gt;
+
+&lt;p&gt;Por otro lado, si quieres comenzar a trastear con el lenguaje, en la página oficial existe &lt;a href=&quot;https://www.typescriptlang.org/play/index.html&quot;&gt;una herramienta&lt;/a&gt; que te permitirá hacerlo. Hasta aquí el primer post de introducción al lenguaje, en el próximo se abordarán otras características del lenguaje como: decorators, generators, implementación async / await, etcétera.&lt;/p&gt;
+
+&lt;p&gt;Un saludo y happy coding!&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>Hola mundo!</title>
