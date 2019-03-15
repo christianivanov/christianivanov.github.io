@@ -4,13 +4,63 @@
  <title>ChristianIvanov</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2019-03-03T14:48:24+01:00</updated>
+ <updated>2019-03-15T18:22:03+01:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Christian Ivanov</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Analizando el compilador de TypeScript</title>
+   <link href="http://localhost:4000/2019/03/15/compilador-typescript/"/>
+   <updated>2019-03-15T00:00:00+01:00</updated>
+   <id>http://localhost:4000/2019/03/15/compilador-typescript</id>
+   <content type="html">&lt;p&gt;Siempre me ha apasionado la programación a bajo nivel. Si quieres saber cómo funciona un lenguaje, estudia su compilador. Es por ello que la curiosidad me ha conducido a analizar el compilador de TypeScript, donde he encontrado algunas cosas interesantes. En primer lugar, veamos en un diagrama la estructura del compilador de TypeScript, para un posterior análisis:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/wiki/Microsoft/TypeScript/images/architecture.png&quot; alt=&quot;Arquitectura del compilador&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Como podemos intuir, el Core es la parte más importante. Cuenta con el &lt;em&gt;Type Resolver&lt;/em&gt; (checker.ts) que valida cada operación semántica y genera el diagnóstico adecuado en caso de error. También podemos ver el &lt;em&gt;Emitter&lt;/em&gt;, encargado de convertir el input (archivos .ts and .d.ts) en archivos JavaScript o el &lt;em&gt;Language Service&lt;/em&gt;, que soporta las operaciones de edición como autocompletado de sintaxis, re-factoring o el soporte incremental de compilación. Por otro lado, el &lt;em&gt;Standalone Compiler&lt;/em&gt; se encarga de la integración con otros motores, por ejemplo, con Nodejs. La siguiente capa con &lt;em&gt;VSShim&lt;/em&gt; y &lt;em&gt;tsserver&lt;/em&gt; tiene la función de integrarse con Visual Studio y otros editores de texto para hacer que la experiencia sea mucho más sencilla. Por último, nos encontramos con el editor, donde daremos todas las instrucciones necesarias para que el Core haga que la magia suceda.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Estructura de datos: Abstract Syntax Tree (AST)&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;En cuanto a la estructura de datos, nos encontramos con el &lt;em&gt;Abstract Syntax Tree&lt;/em&gt; que es el encargado de clasificar, mediante nodos, cada elemento generado por nuestro código. Con el &lt;em&gt;SourceFile&lt;/em&gt; se va referenciando cada uno de los identificadores mencionados. Por tanto, un programa (unidad de compilación) está compuesto por un conjunto de SourceFile. Otra pieza destacada es el &lt;em&gt;Symbol&lt;/em&gt;, que conecta cada uno de los nodos con los que estén relacionados dentro de la misma entidad. Se define de la siguiente forma:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt;  &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Symbol&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Symbol&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;flags&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;SymbolFlags&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;__String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;flags&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;flags&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+       &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;escapedName&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+       &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;declarations&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;undefined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+       &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;valueDeclaration&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;undefined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+       &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;undefined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+       &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;mergeId&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;undefined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+       &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;parent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;undefined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Son creados por el &lt;em&gt;Binder&lt;/em&gt;, cuya principal función es recopilar varias piezas de código para otorgarle coherencia o cohesión. Citando un ejemplo del libro de Remo Jansen &lt;a href=&quot;https://www.amazon.es/Learning-TypeScript-2-x-captivating-applications/dp/1788391470/ref=dp_ob_title_bk&quot;&gt;Learning TypeScript&lt;/a&gt;, el lenguaje tiene una característica denomina ‘declaration merging’ que permite precisamente hacer esta fusión, veámoslo un ejemplo con código:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-js&quot; data-lang=&quot;js&quot;&gt; &lt;span class=&quot;kr&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Person&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;nl&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kr&quot;&gt;interface&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Person&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+       &lt;span class=&quot;nl&quot;&gt;surname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kd&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;person&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;Person&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Christian&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;surname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Ivanov&quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;};&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;En este caso, el comportamiento esperado del &lt;em&gt;Binder&lt;/em&gt; es unificar las propiedades del tipo declarado previamente y mergearlo.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Repasando el proceso de compilación&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Todo el proceso comienza con el procesamiento de todos los archivos ubicados en &lt;span style=&quot;color:red&quot;&gt;/// &amp;lt;reference path=… /&amp;gt;&lt;/span&gt; e &lt;span style=&quot;color:red&quot;&gt;import&lt;/span&gt;. Como hemos mencionado con anterioridad, el parser crea los nodos, que no es más que una representación abstracta del input que ha procesado en formato de árbol. Una vez hecho, se generan los &lt;span style=&quot;color:red&quot;&gt;Symbol&lt;/span&gt;s. Cada Symbol es creado para identificar cada uno de los elementos procesados, pudiendo tener el mismo nombre, pero diferente alcance. Al ser generados, se crea un &lt;em&gt;SourceFile&lt;/em&gt; mediante el uso de la API &lt;em&gt;createSourceFile&lt;/em&gt;. Por lo que un programa es, básicamente, un conjunto de SourceFiles junto con una configuración de compilación (&lt;em&gt;CompilerOptions&lt;/em&gt;). Cuando el programa se ha instanciado, entra en acción el &lt;em&gt;TypeChecker&lt;/em&gt;, que es el core del compilador. Entre sus funciones, se encuentra: recopilar todos los símbolos creados en los diferentes SourceFiles, mergearlo en una unidad y determinar su tipo, para localizar errores. Estando todo validado, el &lt;em&gt;Emitter&lt;/em&gt; genera el output, archivos de tipo .js, .jsx, .d.ts, y .js.map (recuerda que el compilador de TypeScript, transcompila todo a JavaScript).&lt;/p&gt;
+
+&lt;p&gt;Sin más, el propósito de este post solo era echar un pequeño vistazo a la capa más superficial del compilador, si quieres ver cómo sería el resultado del AST que hemos mencionado, podéis echarle un vistazo al siguiente &lt;a href=&quot;https://ts-ast-viewer.com&quot;&gt;enlace&lt;/a&gt;. Por otro lado, para interactuar con la API que el mismo compilador proporciona, podéis también echarle un ojo a &lt;a href=&quot;https://github.com/dsherret/ts-morph&quot;&gt;ts-morph&lt;/a&gt;, un proyecto que nos permitirá leer y manipular el AST.&lt;/p&gt;
+
+&lt;p&gt;Happy coding!&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>Introducción a TypeScript (segunda parte)</title>

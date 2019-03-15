@@ -105,6 +105,60 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/2019/03/15/compilador-typescript/">
+        Analizando el compilador de TypeScript
+      </a>
+    </h1>
+
+    <span class="post-date">15 Mar 2019</span>
+
+    <p>Siempre me ha apasionado la programación a bajo nivel. Si quieres saber cómo funciona un lenguaje, estudia su compilador. Es por ello que la curiosidad me ha conducido a analizar el compilador de TypeScript, donde he encontrado algunas cosas interesantes. En primer lugar, veamos en un diagrama la estructura del compilador de TypeScript, para un posterior análisis:</p>
+
+<p><img src="https://raw.githubusercontent.com/wiki/Microsoft/TypeScript/images/architecture.png" alt="Arquitectura del compilador" /></p>
+
+<p>Como podemos intuir, el Core es la parte más importante. Cuenta con el <em>Type Resolver</em> (checker.ts) que valida cada operación semántica y genera el diagnóstico adecuado en caso de error. También podemos ver el <em>Emitter</em>, encargado de convertir el input (archivos .ts and .d.ts) en archivos JavaScript o el <em>Language Service</em>, que soporta las operaciones de edición como autocompletado de sintaxis, re-factoring o el soporte incremental de compilación. Por otro lado, el <em>Standalone Compiler</em> se encarga de la integración con otros motores, por ejemplo, con Nodejs. La siguiente capa con <em>VSShim</em> y <em>tsserver</em> tiene la función de integrarse con Visual Studio y otros editores de texto para hacer que la experiencia sea mucho más sencilla. Por último, nos encontramos con el editor, donde daremos todas las instrucciones necesarias para que el Core haga que la magia suceda.</p>
+
+<p><strong>Estructura de datos: Abstract Syntax Tree (AST)</strong></p>
+
+<p>En cuanto a la estructura de datos, nos encontramos con el <em>Abstract Syntax Tree</em> que es el encargado de clasificar, mediante nodos, cada elemento generado por nuestro código. Con el <em>SourceFile</em> se va referenciando cada uno de los identificadores mencionados. Por tanto, un programa (unidad de compilación) está compuesto por un conjunto de SourceFile. Otra pieza destacada es el <em>Symbol</em>, que conecta cada uno de los nodos con los que estén relacionados dentro de la misma entidad. Se define de la siguiente forma:</p>
+
+<figure class="highlight"><pre><code class="language-js" data-lang="js">  <span class="kd">function</span> <span class="nb">Symbol</span><span class="p">(</span><span class="k">this</span><span class="p">:</span> <span class="nb">Symbol</span><span class="p">,</span> <span class="nx">flags</span><span class="p">:</span> <span class="nx">SymbolFlags</span><span class="p">,</span> <span class="nx">name</span><span class="p">:</span> <span class="nx">__String</span><span class="p">)</span> <span class="p">{</span>
+       <span class="k">this</span><span class="p">.</span><span class="nx">flags</span> <span class="o">=</span> <span class="nx">flags</span><span class="p">;</span>
+       <span class="k">this</span><span class="p">.</span><span class="nx">escapedName</span> <span class="o">=</span> <span class="nx">name</span><span class="p">;</span>
+       <span class="k">this</span><span class="p">.</span><span class="nx">declarations</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+       <span class="k">this</span><span class="p">.</span><span class="nx">valueDeclaration</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+       <span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+       <span class="k">this</span><span class="p">.</span><span class="nx">mergeId</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+       <span class="k">this</span><span class="p">.</span><span class="nx">parent</span> <span class="o">=</span> <span class="kc">undefined</span><span class="p">;</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Son creados por el <em>Binder</em>, cuya principal función es recopilar varias piezas de código para otorgarle coherencia o cohesión. Citando un ejemplo del libro de Remo Jansen <a href="https://www.amazon.es/Learning-TypeScript-2-x-captivating-applications/dp/1788391470/ref=dp_ob_title_bk">Learning TypeScript</a>, el lenguaje tiene una característica denomina ‘declaration merging’ que permite precisamente hacer esta fusión, veámoslo un ejemplo con código:</p>
+
+<figure class="highlight"><pre><code class="language-js" data-lang="js"> <span class="kr">interface</span> <span class="nx">Person</span> <span class="p">{</span>
+       <span class="nl">name</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kr">interface</span> <span class="nx">Person</span> <span class="p">{</span>
+       <span class="nl">surname</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">const</span> <span class="nx">person</span><span class="p">:</span> <span class="nx">Person</span> <span class="o">=</span> <span class="p">{</span> <span class="na">name</span><span class="p">:</span> <span class="s2">"Christian"</span><span class="p">,</span> <span class="na">surname</span><span class="p">:</span> <span class="s2">"Ivanov"</span> <span class="p">};</span></code></pre></figure>
+
+<p>En este caso, el comportamiento esperado del <em>Binder</em> es unificar las propiedades del tipo declarado previamente y mergearlo.</p>
+
+<p><strong>Repasando el proceso de compilación</strong></p>
+
+<p>Todo el proceso comienza con el procesamiento de todos los archivos ubicados en <span style="color:red">/// &lt;reference path=… /&gt;</span> e <span style="color:red">import</span>. Como hemos mencionado con anterioridad, el parser crea los nodos, que no es más que una representación abstracta del input que ha procesado en formato de árbol. Una vez hecho, se generan los <span style="color:red">Symbol</span>s. Cada Symbol es creado para identificar cada uno de los elementos procesados, pudiendo tener el mismo nombre, pero diferente alcance. Al ser generados, se crea un <em>SourceFile</em> mediante el uso de la API <em>createSourceFile</em>. Por lo que un programa es, básicamente, un conjunto de SourceFiles junto con una configuración de compilación (<em>CompilerOptions</em>). Cuando el programa se ha instanciado, entra en acción el <em>TypeChecker</em>, que es el core del compilador. Entre sus funciones, se encuentra: recopilar todos los símbolos creados en los diferentes SourceFiles, mergearlo en una unidad y determinar su tipo, para localizar errores. Estando todo validado, el <em>Emitter</em> genera el output, archivos de tipo .js, .jsx, .d.ts, y .js.map (recuerda que el compilador de TypeScript, transcompila todo a JavaScript).</p>
+
+<p>Sin más, el propósito de este post solo era echar un pequeño vistazo a la capa más superficial del compilador, si quieres ver cómo sería el resultado del AST que hemos mencionado, podéis echarle un vistazo al siguiente <a href="https://ts-ast-viewer.com">enlace</a>. Por otro lado, para interactuar con la API que el mismo compilador proporciona, podéis también echarle un ojo a <a href="https://github.com/dsherret/ts-morph">ts-morph</a>, un proyecto que nos permitirá leer y manipular el AST.</p>
+
+<p>Happy coding!</p>
+
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/2019/01/14/Introduccio-n-a-typescript-dos/">
         Introducción a TypeScript (segunda parte)
       </a>
