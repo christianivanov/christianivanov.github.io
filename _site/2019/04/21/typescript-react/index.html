@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      TypeScript + React &middot; ChristianIvanov
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/lanyon.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  <!-- Google Analitycs -->
+  
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>Blog personal de Christian Ivanov,  desarrollador de Software y apasionado de las nuevas tecnologías. Sígueme en twitter <a href="https://twitter.com/ChristianIvanov" target="_blank">@ChristianIvanov</a>.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">Home</a>
+
+    
+
+    
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about/">About</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/archive/">Archive</a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+    <a class="sidebar-nav-item" href="https://github.com/ChristianIvanov">GitHub projects</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+      &copy; 2019. All rights reserved.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+          <h3 class="masthead-title">
+            <a href="/" title="Home">ChristianIvanov</a>
+            <small>Home</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">TypeScript + React</h1>
+  <span class="post-date">21 Apr 2019</span>
+  <p>En el segundo meetup de <a href="https://www.meetup.com/es-ES/Sevilla-TypeScript/events/258304766/">Sevilla TypeScript</a> realicé una ponencia introductoria sobre las ventajas de usar React con TypeScript. Con este post pretendo hacer una extensión de la introducción que hice en aquella ocasión. Para ello, vamos a aprender cómo iniciar nuestro primer proyecto con TypeScript y React.</p>
+
+<p><strong>¿Qué es React?</strong></p>
+
+<p>Es una librería escrita en JavaScript, una de las más populares, pues cuenta con más de 100.000 stars en <a href="https://github.com/facebook/react">GitHub</a>. Está creado y matenido por Facebook, pensado para construir interfaces (UI) en la capa de front-end. Determina como los datos son almacenados mediante <em>props</em> y <em>state</em>. Las <em>props</em> (propiedades) son los atributos que se pueden definir en un componente, mientras que el <em>state</em> se definiría como la representación de dicho componente en un determinado momento, que irá mutando en función de su ciclo de vida.</p>
+
+<p><strong>¿Cuáles son sus ventajas?</strong></p>
+
+<p>Es declarativo, es decir, como hemos comentado previamente contamos con el estado de una aplicación y sus componentes responden a ese estado, esta circunstancia hace que el código sea mucho más predictivo y fácil de debbugear.  Otra de sus ventajas se muestra en el rendimiento, ya que antes se realizan las operaciones sobre el DOM virtual, eso provoca que la sensación de renderizado sea mucho más fluida.</p>
+
+<p><strong>¿Cómo creamos nuestra primera aplicación?</strong></p>
+
+<p>Desde octubre del año pasado, esta tarea es bastante sencilla, gracias a que <a href="https://github.com/facebook/create-react-app">create-react-app</a> cuenta con soporte oficial para TypeScript. Como puedes intuir leyendo su nombre, esta app nos permitirá crear una aplicación básica en react con el propósito de aprender cómo funciona en un entorno de desarrollo cómodo o crear componentes nuevos que luego podremos usar en nuestros proyectos.</p>
+
+<p>Para crea nuestra nueva app, solo tendremos que tener instalado una versión de Node &gt;= 6 y usar el comando:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">npx create-react-app my-app <span class="nt">--typescript</span></code></pre></figure>
+
+<p>Sí, así de sencillo. Esto nos generará un proyecto con la siguiente estructura:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">my-app
+├── README.md
+├── node_modules
+├── package.json
+├── tsconfig.json <span class="o">(</span>opciones de compilación en TS<span class="o">)</span>
+├── .gitignore
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   └── manifest.json
+└── src
+    ├── App.css
+    ├── App.js
+    ├── App.test.js
+    ├── index.css
+    ├── index.js
+    ├── logo.svg
+    └── serviceWorker.js</code></pre></figure>
+
+<p>Y, además, nos generará un archivo tsconfig.json, donde pondremos todas las instrucciones que el compilador deberá obedecer.</p>
+
+<p>Una vez con el proyecto creado, veamos cuáles son las ventajas de usar TypeScript con react con un sencillo ejemplo. La más importante, sin duda, el tipado. Es decir, podremos declarar componentes e intuir más fácilmente cuál será su funcionamiento dependiendo del tipo de parámetro que recibe. Veámoslo con un sencillísimo ejemplo, vamos a crear un nuevo componente que recibirá un número que será, en este caso, nuestra edad:</p>
+
+<figure class="highlight"><pre><code class="language-react" data-lang="react"> <span class="kd">function</span> <span class="nx">DiMiEdad</span><span class="p">({</span><span class="nx">edad</span><span class="p">}:</span> <span class="p">{</span><span class="nl">edad</span><span class="p">:</span> <span class="nx">number</span><span class="p">}){</span>
+      <span class="k">return</span> <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>Hola! Tengo: <span class="si">{</span><span class="nx">edad</span><span class="si">}</span> años<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">}</span></code></pre></figure>
+
+<p>Cuando tratemos de invocarlo, en cuanto escribamos la primera letra, el editor nos sugerirá la función que vamos a usar, indicándonos qué tipo parámetro acepta, para no llevarnos a confusiones:</p>
+
+<p><img src="/assets/ts04.png" alt="la magia ocurre" /></p>
+
+<p>Esta la clave de todo, lo que hará que nos evitemos un quebradero de cabeza, lo que le da toda la potencia necesaria a nuestro proyecto para hacer que, cuando otras personas o incluso nosotros mismos trabajemos en ello, todo sea mucho más fácil. El ejemplo es bastante sencillo, pero se intuye que las posibilidades, en este sentido, son muchísimas para hacer que todo sea más robusto y fácilmente escalable.</p>
+
+<p>Por otro lado, si tratamos de asignarle a edad un valor de tipo string, el compilador intervendrá y no hará su cometido:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">Failed to compile.
+
+/Users/christianivanov/Documents/ejemplo react2/my-app/src/App.tsx
+TypeScript error: Type <span class="s1">'string'</span> is not assignable to <span class="nb">type</span> <span class="s1">'number'</span><span class="nb">.</span>  TS2322
+
+    11 |           &lt;p&gt;
+    12 |             Edit &lt;code&gt;src/App.tsx&lt;/code&gt; and save to reload.
+  <span class="o">&gt;</span> 13 |             &lt;DiMiEdad edad <span class="o">=</span> <span class="o">{</span><span class="s1">'nombre'</span><span class="o">}</span>/&gt;
+       |                       ^
+    14 |           &lt;/p&gt;
+    15 |           &lt;a
+    16 |             <span class="nv">className</span><span class="o">=</span><span class="s2">"App-link"</span></code></pre></figure>
+
+<p>Todo esto nos ayudará a prevenir errores no deseados. Grandes empresas como AirBnb han sido capaces de <a href="https://twitter.com/swyx/status/1093670844495089664">reducir sus errores</a> en producción usando TypeScript un 38%, una cifra bastante significativa, que nos deja evidencias significativas de las ventajas de usar TypeScript con otras tecnologías para minimizar errores.</p>
+
+<p>¡Esto es todo por ahora! Solo quería mostrar mediante un pequeño ejemplo las posibilidades de juntar TypeScript con React. En futuros posts, seguiremos aprendiendo como combinar ambas tecnologías.</p>
+
+<p>Happy coding!</p>
+
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2019/03/15/compilador-typescript/">
+            Analizando el compilador de TypeScript
+            <small>15 Mar 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2019/01/14/Introduccio-n-a-typescript-dos/">
+            Introducción a TypeScript (segunda parte)
+            <small>14 Jan 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2018/12/06/Introducci%C3%B3n-a-typescript/">
+            Introducción a TypeScript (Primera parte)
+            <small>06 Dec 2018</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+  </body>
+</html>

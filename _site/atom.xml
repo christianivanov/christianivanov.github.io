@@ -4,13 +4,95 @@
  <title>ChristianIvanov</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2019-03-15T18:22:03+01:00</updated>
+ <updated>2019-04-21T14:37:06+02:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Christian Ivanov</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>TypeScript + React</title>
+   <link href="http://localhost:4000/2019/04/21/typescript-react/"/>
+   <updated>2019-04-21T00:00:00+02:00</updated>
+   <id>http://localhost:4000/2019/04/21/typescript-react</id>
+   <content type="html">&lt;p&gt;En el segundo meetup de &lt;a href=&quot;https://www.meetup.com/es-ES/Sevilla-TypeScript/events/258304766/&quot;&gt;Sevilla TypeScript&lt;/a&gt; realicé una ponencia introductoria sobre las ventajas de usar React con TypeScript. Con este post pretendo hacer una extensión de la introducción que hice en aquella ocasión. Para ello, vamos a aprender cómo iniciar nuestro primer proyecto con TypeScript y React.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;¿Qué es React?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Es una librería escrita en JavaScript, una de las más populares, pues cuenta con más de 100.000 stars en &lt;a href=&quot;https://github.com/facebook/react&quot;&gt;GitHub&lt;/a&gt;. Está creado y matenido por Facebook, pensado para construir interfaces (UI) en la capa de front-end. Determina como los datos son almacenados mediante &lt;em&gt;props&lt;/em&gt; y &lt;em&gt;state&lt;/em&gt;. Las &lt;em&gt;props&lt;/em&gt; (propiedades) son los atributos que se pueden definir en un componente, mientras que el &lt;em&gt;state&lt;/em&gt; se definiría como la representación de dicho componente en un determinado momento, que irá mutando en función de su ciclo de vida.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;¿Cuáles son sus ventajas?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Es declarativo, es decir, como hemos comentado previamente contamos con el estado de una aplicación y sus componentes responden a ese estado, esta circunstancia hace que el código sea mucho más predictivo y fácil de debbugear.  Otra de sus ventajas se muestra en el rendimiento, ya que antes se realizan las operaciones sobre el DOM virtual, eso provoca que la sensación de renderizado sea mucho más fluida.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;¿Cómo creamos nuestra primera aplicación?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Desde octubre del año pasado, esta tarea es bastante sencilla, gracias a que &lt;a href=&quot;https://github.com/facebook/create-react-app&quot;&gt;create-react-app&lt;/a&gt; cuenta con soporte oficial para TypeScript. Como puedes intuir leyendo su nombre, esta app nos permitirá crear una aplicación básica en react con el propósito de aprender cómo funciona en un entorno de desarrollo cómodo o crear componentes nuevos que luego podremos usar en nuestros proyectos.&lt;/p&gt;
+
+&lt;p&gt;Para crea nuestra nueva app, solo tendremos que tener instalado una versión de Node &amp;gt;= 6 y usar el comando:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;npx create-react-app my-app &lt;span class=&quot;nt&quot;&gt;--typescript&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Sí, así de sencillo. Esto nos generará un proyecto con la siguiente estructura:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;my-app
+├── README.md
+├── node_modules
+├── package.json
+├── tsconfig.json &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;opciones de compilación en TS&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+├── .gitignore
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   └── manifest.json
+└── src
+    ├── App.css
+    ├── App.js
+    ├── App.test.js
+    ├── index.css
+    ├── index.js
+    ├── logo.svg
+    └── serviceWorker.js&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Y, además, nos generará un archivo tsconfig.json, donde pondremos todas las instrucciones que el compilador deberá obedecer.&lt;/p&gt;
+
+&lt;p&gt;Una vez con el proyecto creado, veamos cuáles son las ventajas de usar TypeScript con react con un sencillo ejemplo. La más importante, sin duda, el tipado. Es decir, podremos declarar componentes e intuir más fácilmente cuál será su funcionamiento dependiendo del tipo de parámetro que recibe. Veámoslo con un sencillísimo ejemplo, vamos a crear un nuevo componente que recibirá un número que será, en este caso, nuestra edad:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-react&quot; data-lang=&quot;react&quot;&gt; &lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;DiMiEdad&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;edad&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;edad&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;number&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}){&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;Hola! Tengo: &lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;edad&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt; años&lt;span class=&quot;p&quot;&gt;&amp;lt;/&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;div&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Cuando tratemos de invocarlo, en cuanto escribamos la primera letra, el editor nos sugerirá la función que vamos a usar, indicándonos qué tipo parámetro acepta, para no llevarnos a confusiones:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/ts04.png&quot; alt=&quot;la magia ocurre&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Esta la clave de todo, lo que hará que nos evitemos un quebradero de cabeza, lo que le da toda la potencia necesaria a nuestro proyecto para hacer que, cuando otras personas o incluso nosotros mismos trabajemos en ello, todo sea mucho más fácil. El ejemplo es bastante sencillo, pero se intuye que las posibilidades, en este sentido, son muchísimas para hacer que todo sea más robusto y fácilmente escalable.&lt;/p&gt;
+
+&lt;p&gt;Por otro lado, si tratamos de asignarle a edad un valor de tipo string, el compilador intervendrá y no hará su cometido:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-shell&quot; data-lang=&quot;shell&quot;&gt;Failed to compile.
+
+/Users/christianivanov/Documents/ejemplo react2/my-app/src/App.tsx
+TypeScript error: Type &lt;span class=&quot;s1&quot;&gt;'string'&lt;/span&gt; is not assignable to &lt;span class=&quot;nb&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'number'&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;  TS2322
+
+    11 |           &amp;lt;p&amp;gt;
+    12 |             Edit &amp;lt;code&amp;gt;src/App.tsx&amp;lt;/code&amp;gt; and save to reload.
+  &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; 13 |             &amp;lt;DiMiEdad edad &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'nombre'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;/&amp;gt;
+       |                       ^
+    14 |           &amp;lt;/p&amp;gt;
+    15 |           &amp;lt;a
+    16 |             &lt;span class=&quot;nv&quot;&gt;className&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;App-link&quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;Todo esto nos ayudará a prevenir errores no deseados. Grandes empresas como AirBnb han sido capaces de &lt;a href=&quot;https://twitter.com/swyx/status/1093670844495089664&quot;&gt;reducir sus errores&lt;/a&gt; en producción usando TypeScript un 38%, una cifra bastante significativa, que nos deja evidencias significativas de las ventajas de usar TypeScript con otras tecnologías para minimizar errores.&lt;/p&gt;
+
+&lt;p&gt;¡Esto es todo por ahora! Solo quería mostrar mediante un pequeño ejemplo las posibilidades de juntar TypeScript con React. En futuros posts, seguiremos aprendiendo como combinar ambas tecnologías.&lt;/p&gt;
+
+&lt;p&gt;Happy coding!&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>Analizando el compilador de TypeScript</title>
