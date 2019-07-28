@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      TypeScript + VueJs &middot; ChristianIvanov
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/lanyon.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  <!-- Google Analitycs -->
+  
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>Blog personal de Christian Ivanov,  desarrollador de Software y apasionado de las nuevas tecnologías. Sígueme en twitter <a href="https://twitter.com/ChristianIvanov" target="_blank">@ChristianIvanov</a>.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">Home</a>
+
+    
+
+    
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about/">About</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/archive/">Archive</a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+    <a class="sidebar-nav-item" href="https://github.com/ChristianIvanov">GitHub projects</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+      &copy; 2019. All rights reserved.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+          <h3 class="masthead-title">
+            <a href="/" title="Home">ChristianIvanov</a>
+            <small>Home</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">TypeScript + VueJs</h1>
+  <span class="post-date">28 Jul 2019</span>
+  <p>En el último <a href="https://www.meetup.com/es-ES/Sevilla-TypeScript/events/261518440/">meetup de Sevilla TypeScript</a> se ha hablado de las ventajas de utilizar TypeScript con Vue.js, además de cómo iniciar un proyecto haciendo énfasis en las diferencias que existen respecto a otras tecnologías. En este post, vamos a ahondar un poco en este asunto, tratando de mostrar cuáles son las ventajas y desventajas de utilizar Vue.js con TypeScipt.</p>
+
+<p><strong>¿Qué es Vue?</strong></p>
+
+<p>Vue.js es un framework progresivo para construir interfaces de usuario bastante versátil, es <a href="https://github.com/vuejs/vue">Open Source</a> y cuenta más de 140.000 estrellas en GitHub. Fue desarrollado por <a href="https://twitter.com/youyuxi">Evan You</a> con la idea de obtener lo mejor de otras tecnologías como Angular o React, quedándose solo con lo imprescindible, haciendo así una tecnología bastante ligera (el Core de VueJS tan solo ocupa unos 20KB).</p>
+
+<p>Características:</p>
+<ul>
+  <li>Es reactivo.</li>
+  <li>Es progresivo, como hemos mencionado anteriormente, podemos decidir qué partes de la tecnología incluimos en nuestro proyecto. Está diseñado para ser adoptado incrementalmente.</li>
+  <li>Al igual que React, el uso del DOM virtual hace que sea sensación de renderizado sea bastante fluida.</li>
+</ul>
+
+<p><strong>Integración con TypeScript</strong></p>
+
+<p>Aunque la integración es cada vez mejor (sobre todo desde a partir de la versión 3.x), quizás habría que ser prudente a la hora de llevar código con ambas tecnologías a producción. Otro aspecto que destacar es que hasta ahora la documentación que puedes encontrar sobre ambas tecnologías es escasa aunque, sin duda, si tuviera que empezar un proyecto a día de hoy con Vue lo haría con TypeScript.</p>
+
+<p>La configuración necesaria para iniciar un proyecto, tal y como se recomienda en la web oficial, es la siguiente:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// tsconfig.json</span>
+<span class="p">{</span>
+  <span class="s2">"compilerOptions"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="c1">// this aligns with Vue's browser support</span>
+    <span class="s2">"target"</span><span class="p">:</span> <span class="s2">"es5"</span><span class="p">,</span>
+    <span class="c1">// this enables stricter inference for data properties on `this`</span>
+    <span class="s2">"strict"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="c1">// if using webpack 2+ or rollup, to leverage tree shaking:</span>
+    <span class="s2">"module"</span><span class="p">:</span> <span class="s2">"es2015"</span><span class="p">,</span>
+    <span class="s2">"moduleResolution"</span><span class="p">:</span> <span class="s2">"node"</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Por otro lado, para crear nuestro primer proyecto será necesario solo introducir en consola lo siguiente:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="c"># 1. Install Vue CLI, if it's not already installed</span>
+npm <span class="nb">install</span> <span class="nt">--global</span> @vue/cli
+
+<span class="c"># 2. Create a new project, then choose the "Manually select features" option</span>
+vue create my-project-name</code></pre></figure>
+
+<p>Si quieres practicar con código, te recomiendo que uses <a href="https://github.com/microsoft/TypeScript-Vue-Starter">este repositorio</a> de iniciación.</p>
+
+<p><strong>¿Qué lo diferencia de React?</strong></p>
+
+<p>Lo primero que debemos mencionar es que, en términos de popularidad, actualmente React gana la partida. Esto significa que tendrás más documentación o ejemplos al respecto que te ayudarán a solucionar problemas más rápidamente ya tiene detrás a Facebook respaldando la tecnología además de una gran comunidad, aunque la popularidad de Vue está en constante crecimiento. Por otro lado, en cuanto a tecnología móvil, la que ofrece React es más madura, es decir, si quieres montar un proyecto tanto para web como para mobile la recomendación es React. Otra diferencia significativa es que, aunque ambas tecnologías tienen una arquitectura basada en componentes, en Vue se usa HTML para las plantillas (aunque también puedes usar otros estilos como JSX) en un único documento mientras que en React se utiliza JavaScript.</p>
+
+<p><strong>Conclusiones</strong></p>
+
+<p>Como hemos visto Vue propone una gran solución con la premisa de que a veces, <em>menos, es más</em>. Vue es una gran herramienta, que te abre grandes posibilidades con muy poco, sobre todo si posees menos experiencia en el desarrollo en la parte del frontend. Por todo lo citado con anterioridad, diría que Vue se ajusta a tus necesidades si tienes un proyecto de pequeña o mediana escala, mientras que React estaría recomendado para grandes proyectos. Este post ha sido bastante introductorio, sin embargo, más adelante habrá una segunda parte con otro ejemplo más avanzado.</p>
+
+<p>Happy codding!</p>
+
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2019/04/21/typescript-react/">
+            TypeScript + React
+            <small>21 Apr 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2019/03/15/compilador-typescript/">
+            Analizando el compilador de TypeScript
+            <small>15 Mar 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2019/01/14/Introduccio-n-a-typescript-dos/">
+            Introducción a TypeScript (segunda parte)
+            <small>14 Jan 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+  </body>
+</html>

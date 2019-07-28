@@ -74,6 +74,8 @@
       
     
       
+    
+      
         
     <a class="sidebar-nav-item" href="https://github.com/ChristianIvanov">GitHub projects</a>
   </nav>
@@ -102,6 +104,70 @@
 
       <div class="container content">
         <div class="posts">
+  
+  <div class="post">
+    <h1 class="post-title">
+      <a href="/2019/07/28/typescript-vue/">
+        TypeScript + VueJs
+      </a>
+    </h1>
+
+    <span class="post-date">28 Jul 2019</span>
+
+    <p>En el último <a href="https://www.meetup.com/es-ES/Sevilla-TypeScript/events/261518440/">meetup de Sevilla TypeScript</a> se ha hablado de las ventajas de utilizar TypeScript con Vue.js, además de cómo iniciar un proyecto haciendo énfasis en las diferencias que existen respecto a otras tecnologías. En este post, vamos a ahondar un poco en este asunto, tratando de mostrar cuáles son las ventajas y desventajas de utilizar Vue.js con TypeScipt.</p>
+
+<p><strong>¿Qué es Vue?</strong></p>
+
+<p>Vue.js es un framework progresivo para construir interfaces de usuario bastante versátil, es <a href="https://github.com/vuejs/vue">Open Source</a> y cuenta más de 140.000 estrellas en GitHub. Fue desarrollado por <a href="https://twitter.com/youyuxi">Evan You</a> con la idea de obtener lo mejor de otras tecnologías como Angular o React, quedándose solo con lo imprescindible, haciendo así una tecnología bastante ligera (el Core de VueJS tan solo ocupa unos 20KB).</p>
+
+<p>Características:</p>
+<ul>
+  <li>Es reactivo.</li>
+  <li>Es progresivo, como hemos mencionado anteriormente, podemos decidir qué partes de la tecnología incluimos en nuestro proyecto. Está diseñado para ser adoptado incrementalmente.</li>
+  <li>Al igual que React, el uso del DOM virtual hace que sea sensación de renderizado sea bastante fluida.</li>
+</ul>
+
+<p><strong>Integración con TypeScript</strong></p>
+
+<p>Aunque la integración es cada vez mejor (sobre todo desde a partir de la versión 3.x), quizás habría que ser prudente a la hora de llevar código con ambas tecnologías a producción. Otro aspecto que destacar es que hasta ahora la documentación que puedes encontrar sobre ambas tecnologías es escasa aunque, sin duda, si tuviera que empezar un proyecto a día de hoy con Vue lo haría con TypeScript.</p>
+
+<p>La configuración necesaria para iniciar un proyecto, tal y como se recomienda en la web oficial, es la siguiente:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="c1">// tsconfig.json</span>
+<span class="p">{</span>
+  <span class="s2">"compilerOptions"</span><span class="p">:</span> <span class="p">{</span>
+    <span class="c1">// this aligns with Vue's browser support</span>
+    <span class="s2">"target"</span><span class="p">:</span> <span class="s2">"es5"</span><span class="p">,</span>
+    <span class="c1">// this enables stricter inference for data properties on `this`</span>
+    <span class="s2">"strict"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="c1">// if using webpack 2+ or rollup, to leverage tree shaking:</span>
+    <span class="s2">"module"</span><span class="p">:</span> <span class="s2">"es2015"</span><span class="p">,</span>
+    <span class="s2">"moduleResolution"</span><span class="p">:</span> <span class="s2">"node"</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Por otro lado, para crear nuestro primer proyecto será necesario solo introducir en consola lo siguiente:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell"><span class="c"># 1. Install Vue CLI, if it's not already installed</span>
+npm <span class="nb">install</span> <span class="nt">--global</span> @vue/cli
+
+<span class="c"># 2. Create a new project, then choose the "Manually select features" option</span>
+vue create my-project-name</code></pre></figure>
+
+<p>Si quieres practicar con código, te recomiendo que uses <a href="https://github.com/microsoft/TypeScript-Vue-Starter">este repositorio</a> de iniciación.</p>
+
+<p><strong>¿Qué lo diferencia de React?</strong></p>
+
+<p>Lo primero que debemos mencionar es que, en términos de popularidad, actualmente React gana la partida. Esto significa que tendrás más documentación o ejemplos al respecto que te ayudarán a solucionar problemas más rápidamente ya tiene detrás a Facebook respaldando la tecnología además de una gran comunidad, aunque la popularidad de Vue está en constante crecimiento. Por otro lado, en cuanto a tecnología móvil, la que ofrece React es más madura, es decir, si quieres montar un proyecto tanto para web como para mobile la recomendación es React. Otra diferencia significativa es que, aunque ambas tecnologías tienen una arquitectura basada en componentes, en Vue se usa HTML para las plantillas (aunque también puedes usar otros estilos como JSX) en un único documento mientras que en React se utiliza JavaScript.</p>
+
+<p><strong>Conclusiones</strong></p>
+
+<p>Como hemos visto Vue propone una gran solución con la premisa de que a veces, <em>menos, es más</em>. Vue es una gran herramienta, que te abre grandes posibilidades con muy poco, sobre todo si posees menos experiencia en el desarrollo en la parte del frontend. Por todo lo citado con anterioridad, diría que Vue se ajusta a tus necesidades si tienes un proyecto de pequeña o mediana escala, mientras que React estaría recomendado para grandes proyectos. Este post ha sido bastante introductorio, sin embargo, más adelante habrá una segunda parte con otro ejemplo más avanzado.</p>
+
+<p>Happy codding!</p>
+
+
+  </div>
   
   <div class="post">
     <h1 class="post-title">
@@ -510,30 +576,11 @@ TypeScript error: Type <span class="s1">'string'</span> is not assignable to <sp
 
   </div>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2018/10/12/Hola-mundo!/">
-        Hola mundo!
-      </a>
-    </h1>
-
-    <span class="post-date">12 Oct 2018</span>
-
-    <p>Bienvenido a mi blog personal. Quien se dedica al mundo del software (de forma profesional o simplemente por hobby) sabe que es un campo que requiere que estés constantemente evolucionando, aprendiendo nuevas técnicas o tecnologías. Para ello, es fundamental que sientas pasión por lo que haces y, sobre todo, ser constante.</p>
-
-<p>He creado este blog con el simple propósito de comprometerme con esta misión: aprender, no dejar nunca de aprender y compartir todo lo aprendido. <b>Y que mejor manera de asimilar lo aprendido, que tratar de explicarlo</b>. Por ello, el objetivo es publicar, al menos, un post al mes sobre alguna tecnología.</p>
-
-<p>Sin más, espero que el contenido que aquí se genere te sea útil y que lo disfrutes.</p>
-
-<p>Happy coding!</p>
-
-  </div>
-  
 </div>
 
 <div class="pagination">
   
-    <span class="pagination-item older">Older</span>
+    <a class="pagination-item older" href="/page2">Older</a>
   
   
     <span class="pagination-item newer">Newer</span>
