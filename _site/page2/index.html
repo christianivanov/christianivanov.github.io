@@ -107,6 +107,80 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/2018/12/06/Introducci%C3%B3n-a-typescript/">
+        Introducción a TypeScript (Primera parte)
+      </a>
+    </h1>
+
+    <span class="post-date">06 Dec 2018</span>
+
+    <p>En este post me gustaría hacer una breve introducción a TypeScript y analizar los motivos por los que está teniendo tanta popularidad en la comunidad. TypeScript es una tecnología creada y mantenida por Microsoft, de la mano de <a href="https://es.wikipedia.org/wiki/Anders_Hejlsberg">Anders Hejlsberg</a>. En la actualidad, su última versión publicada es la <a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-2.html">3.2</a>, potencia y versatilidad desde sus inicios, TypeScript es ideal para usarlo en proyectos robustos y escalables, ya que es un <i>superseteado</i> de JavaScript en el que se añaden el tipado estático y los objetos basados en clases. Además de todo lo mencionado con anterioridad, es <a href="https://github.com/Microsoft/TypeScript">open source</a>. A modo de resumen, empecemos citando algunas características destacadas del lenguaje:</p>
+
+<ul>
+  <li>Orientada a objetos: soporta todos los elementos de dicho paradigma de programación (clases, interfaces, herencia, polimorfismo, etcétera).</li>
+  <li>Lenguaje tipado: clasificación de las variables según los tipos de datos que usan.</li>
+  <li>Basado en estándares (ECMAScript).</li>
+  <li>Compilado: puedes detectar errores antes de ejecución (no interpreta). Convierte código a JavaScript.</li>
+</ul>
+
+<p>Para programar en TypeScript lo más recomendable es usar <a href="https://code.visualstudio.com">Visual Studio Code</a>, el editor de código basado en Electron y creado por Microsoft ofrece soporte para todas las versiones del lenguaje y, además, añade: Git integrado, debugging, IntelliSense y extensiones. Honestamente, para mí es uno de los mejores productos que ha hecho Microsoft en la última década.</p>
+
+<p>¿Por qué usar TypeScript?</p>
+<ul>
+  <li>Ideal para proyectos escalables, orientado a un entorno empresarial. TypeScript está por grandes empresas y grandes proyectos, un claro de ejemplo de ello es Google, que usa para el desarrollo de Angular dicho lenguaje.</li>
+  <li>La <a href="https://www.typescriptlang.org/docs/home.html">documentación</a> que existe sobre el proyecto es bastante y de calidad.</li>
+  <li>Para frontend y backend: si vienes de desarrollar en backend (como es mi caso), con TypeScript te sentirás como en casa. El lenguaje permite homogeneidad en este aspecto, aunque suela usarse para front, también puedes usarlo en el backend de tu aplicación.</li>
+  <li>La amplia y vibrante comunidad que hay detrás de TypeScript, son unos de los motivos fundamentales del éxito del lenguaje.</li>
+  <li>Interoperable con JavaScript.</li>
+</ul>
+
+<p>Los comandos básicos que debes saber para comenzar con TypeScript son:</p>
+
+<ul>
+  <li>Instalar TypeScript, para ello tenemos que tener previamente instalado npm y Node:</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="nx">npm</span> <span class="nx">install</span> <span class="o">-</span><span class="nx">g</span> <span class="nx">typescript</span></code></pre></figure>
+
+<ul>
+  <li>Para compilar debemos usar el comando:</li>
+</ul>
+
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="nx">tsc</span> <span class="o">&lt;</span><span class="nx">nombre_de_archivo</span><span class="o">&gt;</span><span class="p">.</span><span class="nx">ts</span></code></pre></figure>
+
+<p>Entre las características principales del lenguaje, hemos destacado la introducción de clases, interfaces y funciones, elementos básicos en el paradigma de programación orientado a objetos. Dichos elementos en TypeScript, se presenta de la siguiente forma:</p>
+
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="nx">lass</span> <span class="nx">Student</span> <span class="p">{</span>
+    <span class="nl">fullName</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+    <span class="kd">constructor</span><span class="p">(</span><span class="kr">public</span> <span class="nx">firstName</span><span class="p">:</span> <span class="nx">string</span><span class="p">,</span> <span class="kr">public</span> <span class="nx">middleInitial</span><span class="p">:</span> <span class="nx">string</span><span class="p">,</span> <span class="kr">public</span> <span class="nx">lastName</span><span class="p">:</span> <span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">fullName</span> <span class="o">=</span> <span class="nx">firstName</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nx">middleInitial</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nx">lastName</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kr">interface</span> <span class="nx">Person</span> <span class="p">{</span>
+    <span class="nl">firstName</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+    <span class="nl">lastName</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">greeter</span><span class="p">(</span><span class="nx">person</span> <span class="p">:</span> <span class="nx">Person</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s2">"Hello, "</span> <span class="o">+</span> <span class="nx">person</span><span class="p">.</span><span class="nx">firstName</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nx">person</span><span class="p">.</span><span class="nx">lastName</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">let</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Student</span><span class="p">(</span><span class="s2">"Jane"</span><span class="p">,</span> <span class="s2">"M."</span><span class="p">,</span> <span class="s2">"User"</span><span class="p">);</span>
+
+<span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">greeter</span><span class="p">(</span><span class="nx">user</span><span class="p">);</span></code></pre></figure>
+
+<p>En la página oficial de TypeScript podemos mirar los <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html">tipos de datos básicos</a> que pueden usarse, siendo los mismos que se pueden usar en JavaScript. Se destaca el tipo any, ideal para utilizarlo con librería de terceros en JavaScript que no están adaptadas a TypeScript, eso sí, no muy recomendado si quieres evitar problemas de mutabilidad. Otro a destacatar es el tipo tuple, que representa una colección de valores de varios tipos.</p>
+
+<p>Por otro lado, si quieres comenzar a trastear con el lenguaje, en la página oficial existe <a href="https://www.typescriptlang.org/play/index.html">una herramienta</a> que te permitirá hacerlo. Hasta aquí el primer post de introducción al lenguaje, en el próximo se abordarán otras características del lenguaje como: decorators, generators, implementación async / await, etcétera.</p>
+
+<p>Un saludo y happy coding!</p>
+
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/2018/10/12/Hola-mundo!/">
         Hola mundo!
       </a>

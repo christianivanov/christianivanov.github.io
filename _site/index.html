@@ -107,6 +107,70 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/2019/11/17/typescript-37/">
+        Novedades en TypeScript 3.7
+      </a>
+    </h1>
+
+    <span class="post-date">17 Nov 2019</span>
+
+    <p>La versión 3.7 de TypeScript viene repleta de novedades. Lo primero que debes saber, como siempre, es que si quieres usar esta versión puedes hacerlo a través del comando:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">npm <span class="nb">install</span> <span class="nt">-g</span> typescript@latest</code></pre></figure>
+
+<p>Esta versión se caracteriza por añadir características de ECMAScript para tratar valores <span style="color:red">null</span> y <span style="color:red">undefined</span>. Sin más, comencemos a resumir de forma muy breve las novedades más importantes que presentará esta nueva versión.</p>
+
+<p><strong>Optional Chaining</strong></p>
+
+<p>El encadenamiento opcional nos permite leer cada una de las propiedades dentro de una cadena de objetos sin tener que incluir condiciones que validen que cada una de sus referencias son correctas. Viene representado por el operador <span style="color:red">?</span></p>
+
+<p>Si tenemos en cuenta el siguiente fragmento de código, extraído del <a href="https://devblogs.microsoft.com/typescript/announcing-typescript-3-7-beta/">blog oficial de TypeScript</a>, podemos ver exactamente cómo funciona esta nueva característica:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">foo</span><span class="p">?.</span><span class="nx">bar</span><span class="p">.</span><span class="nx">baz</span><span class="p">();</span></code></pre></figure>
+
+<p>En esta situación, si <span style="color:red">foo</span> está definido la operación se llevará a cabo, pero si es <span style="color:red">null</span> o <span style="color:red">undefined</span> el programa se interrumpirá.</p>
+
+<p>Como se indica en el código escrito previamente, usando el encadenamiento opcional sería como escribir esto:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="p">(</span><span class="nx">foo</span> <span class="o">===</span> <span class="kc">null</span> <span class="o">||</span> <span class="nx">foo</span> <span class="o">===</span> <span class="kc">undefined</span><span class="p">)</span> <span class="p">?</span>
+    <span class="kc">undefined</span> <span class="p">:</span>
+    <span class="nx">foo</span><span class="p">.</span><span class="nx">bar</span><span class="p">.</span><span class="nx">baz</span><span class="p">();</span></code></pre></figure>
+
+<p><strong>Nullish Coalescing</strong></p>
+
+<p>Se trata de otra característica de ECMAScript que viene de la mano junto con la explicada con anterioridad. Sigue en la misma línea de gestionar valores cuando estos sean <span style="color:red">null</span> o <span style="color:red">undefined</span>. Podemos usarlo con el operador <span style="color:red">??</span>. Veámoslo con un sencillo ejemplo:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">let</span> <span class="nx">x</span> <span class="o">=</span> <span class="nx">foo</span> <span class="p">??</span> <span class="nx">bar</span><span class="p">();</span></code></pre></figure>
+
+<p>En este caso, vamos a usar el valor de <span style="color:red">foo</span> cuando tengamos asignado un valor, pero cuando sea <span style="color:red">null</span> o <span style="color:red">undefined</span> vamos a realizar la operación <span style="color:red">bar()</span> en su lugar. Esto nos permitirá tener siempre tener un valor u opción por defecto ante este tipo de situaciones.</p>
+
+<p><strong>Assertion functions</strong></p>
+
+<p>Conocido por estar ya introducido en otros lenguajes, se trata de una expresión cuya premisa va a ser siempre <span style="color:red">true</span> y que, en caso contrario, lanzará una excepción:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="kd">function</span> <span class="nx">yell</span><span class="p">(</span><span class="nx">str</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">assert</span><span class="p">(</span><span class="k">typeof</span> <span class="nx">str</span> <span class="o">===</span> <span class="s2">"string"</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="nx">str</span><span class="p">.</span><span class="nx">toUppercase</span><span class="p">();</span>
+    <span class="c1">//         ~~~~~~~~~~~</span>
+    <span class="c1">// error: Property 'toUppercase' does not exist on type 'string'.</span>
+    <span class="c1">//        Did you mean 'toUpperCase'?</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">assert</span><span class="p">(</span><span class="nx">condition</span><span class="p">:</span> <span class="nx">any</span><span class="p">,</span> <span class="nx">msg</span><span class="p">?:</span> <span class="nx">string</span><span class="p">):</span> <span class="nx">asserts</span> <span class="nx">condition</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">condition</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nx">AssertionError</span><span class="p">(</span><span class="nx">msg</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+<p>Estas serían las tres grandes novedades que presenta esta versión de TypeScript, no obstante, para obtener información más detallada, como he citado anteriormente, <a href="https://devblogs.microsoft.com/typescript/announcing-typescript-3-7-beta/">podéis consultar directamente el post oficial del anuncio</a> donde se incluyen todas sus nuevas características entre las que se encuentra la posibilidad de usar <span style="color:red">–declaration and –allowJs</span> conjuntamente (lo que facilitará la migración de tu proyecto a TypeScript) o el uso de <span style="color:red">Recursive Type Aliases</span>, aunque en un futuro analizaremos más detalladamente alguna de ellas.</p>
+
+<p>Happy codding!</p>
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/2019/07/28/typescript-vue/">
         TypeScript + VueJs
       </a>
@@ -498,80 +562,6 @@ TypeScript error: Type <span class="s1">'string'</span> is not assignable to <sp
 <p>Esto es todo por ahora, pero hay <a href="https://github.com/Microsoft/TypeScript/wiki/Roadmap">mucho más</a>. Poco a poco iremos abordando, de forma más concreta, cada una de sus características. Espero que os haya resultado útil.</p>
 
 <p>Happy coding!</p>
-
-
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2018/12/06/Introducci%C3%B3n-a-typescript/">
-        Introducción a TypeScript (Primera parte)
-      </a>
-    </h1>
-
-    <span class="post-date">06 Dec 2018</span>
-
-    <p>En este post me gustaría hacer una breve introducción a TypeScript y analizar los motivos por los que está teniendo tanta popularidad en la comunidad. TypeScript es una tecnología creada y mantenida por Microsoft, de la mano de <a href="https://es.wikipedia.org/wiki/Anders_Hejlsberg">Anders Hejlsberg</a>. En la actualidad, su última versión publicada es la <a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-2.html">3.2</a>, potencia y versatilidad desde sus inicios, TypeScript es ideal para usarlo en proyectos robustos y escalables, ya que es un <i>superseteado</i> de JavaScript en el que se añaden el tipado estático y los objetos basados en clases. Además de todo lo mencionado con anterioridad, es <a href="https://github.com/Microsoft/TypeScript">open source</a>. A modo de resumen, empecemos citando algunas características destacadas del lenguaje:</p>
-
-<ul>
-  <li>Orientada a objetos: soporta todos los elementos de dicho paradigma de programación (clases, interfaces, herencia, polimorfismo, etcétera).</li>
-  <li>Lenguaje tipado: clasificación de las variables según los tipos de datos que usan.</li>
-  <li>Basado en estándares (ECMAScript).</li>
-  <li>Compilado: puedes detectar errores antes de ejecución (no interpreta). Convierte código a JavaScript.</li>
-</ul>
-
-<p>Para programar en TypeScript lo más recomendable es usar <a href="https://code.visualstudio.com">Visual Studio Code</a>, el editor de código basado en Electron y creado por Microsoft ofrece soporte para todas las versiones del lenguaje y, además, añade: Git integrado, debugging, IntelliSense y extensiones. Honestamente, para mí es uno de los mejores productos que ha hecho Microsoft en la última década.</p>
-
-<p>¿Por qué usar TypeScript?</p>
-<ul>
-  <li>Ideal para proyectos escalables, orientado a un entorno empresarial. TypeScript está por grandes empresas y grandes proyectos, un claro de ejemplo de ello es Google, que usa para el desarrollo de Angular dicho lenguaje.</li>
-  <li>La <a href="https://www.typescriptlang.org/docs/home.html">documentación</a> que existe sobre el proyecto es bastante y de calidad.</li>
-  <li>Para frontend y backend: si vienes de desarrollar en backend (como es mi caso), con TypeScript te sentirás como en casa. El lenguaje permite homogeneidad en este aspecto, aunque suela usarse para front, también puedes usarlo en el backend de tu aplicación.</li>
-  <li>La amplia y vibrante comunidad que hay detrás de TypeScript, son unos de los motivos fundamentales del éxito del lenguaje.</li>
-  <li>Interoperable con JavaScript.</li>
-</ul>
-
-<p>Los comandos básicos que debes saber para comenzar con TypeScript son:</p>
-
-<ul>
-  <li>Instalar TypeScript, para ello tenemos que tener previamente instalado npm y Node:</li>
-</ul>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="nx">npm</span> <span class="nx">install</span> <span class="o">-</span><span class="nx">g</span> <span class="nx">typescript</span></code></pre></figure>
-
-<ul>
-  <li>Para compilar debemos usar el comando:</li>
-</ul>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="nx">tsc</span> <span class="o">&lt;</span><span class="nx">nombre_de_archivo</span><span class="o">&gt;</span><span class="p">.</span><span class="nx">ts</span></code></pre></figure>
-
-<p>Entre las características principales del lenguaje, hemos destacado la introducción de clases, interfaces y funciones, elementos básicos en el paradigma de programación orientado a objetos. Dichos elementos en TypeScript, se presenta de la siguiente forma:</p>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="nx">lass</span> <span class="nx">Student</span> <span class="p">{</span>
-    <span class="nl">fullName</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
-    <span class="kd">constructor</span><span class="p">(</span><span class="kr">public</span> <span class="nx">firstName</span><span class="p">:</span> <span class="nx">string</span><span class="p">,</span> <span class="kr">public</span> <span class="nx">middleInitial</span><span class="p">:</span> <span class="nx">string</span><span class="p">,</span> <span class="kr">public</span> <span class="nx">lastName</span><span class="p">:</span> <span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">this</span><span class="p">.</span><span class="nx">fullName</span> <span class="o">=</span> <span class="nx">firstName</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nx">middleInitial</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nx">lastName</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kr">interface</span> <span class="nx">Person</span> <span class="p">{</span>
-    <span class="nl">firstName</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
-    <span class="nl">lastName</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">greeter</span><span class="p">(</span><span class="nx">person</span> <span class="p">:</span> <span class="nx">Person</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="s2">"Hello, "</span> <span class="o">+</span> <span class="nx">person</span><span class="p">.</span><span class="nx">firstName</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nx">person</span><span class="p">.</span><span class="nx">lastName</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">let</span> <span class="nx">user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Student</span><span class="p">(</span><span class="s2">"Jane"</span><span class="p">,</span> <span class="s2">"M."</span><span class="p">,</span> <span class="s2">"User"</span><span class="p">);</span>
-
-<span class="nb">document</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">innerHTML</span> <span class="o">=</span> <span class="nx">greeter</span><span class="p">(</span><span class="nx">user</span><span class="p">);</span></code></pre></figure>
-
-<p>En la página oficial de TypeScript podemos mirar los <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html">tipos de datos básicos</a> que pueden usarse, siendo los mismos que se pueden usar en JavaScript. Se destaca el tipo any, ideal para utilizarlo con librería de terceros en JavaScript que no están adaptadas a TypeScript, eso sí, no muy recomendado si quieres evitar problemas de mutabilidad. Otro a destacatar es el tipo tuple, que representa una colección de valores de varios tipos.</p>
-
-<p>Por otro lado, si quieres comenzar a trastear con el lenguaje, en la página oficial existe <a href="https://www.typescriptlang.org/play/index.html">una herramienta</a> que te permitirá hacerlo. Hasta aquí el primer post de introducción al lenguaje, en el próximo se abordarán otras características del lenguaje como: decorators, generators, implementación async / await, etcétera.</p>
-
-<p>Un saludo y happy coding!</p>
 
 
   </div>
