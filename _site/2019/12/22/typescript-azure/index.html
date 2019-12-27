@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Trabajando con Azure Functions y TypeScript &middot; ChristianIvanov
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/lanyon.css">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700|PT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  <!-- Google Analitycs -->
+  
+</head>
+
+
+  <body>
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>Blog personal de Christian Ivanov,  desarrollador de Software y apasionado de las nuevas tecnologías. Sígueme en twitter <a href="https://twitter.com/ChristianIvanov" target="_blank">@ChristianIvanov</a>.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">Home</a>
+
+    
+
+    
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about/">About</a>
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/archive/">Archive</a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        
+    <a class="sidebar-nav-item" href="https://github.com/ChristianIvanov">GitHub projects</a>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+      &copy; 2019. All rights reserved.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+          <h3 class="masthead-title">
+            <a href="/" title="Home">ChristianIvanov</a>
+            <small>Home</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">Trabajando con Azure Functions y TypeScript</h1>
+  <span class="post-date">22 Dec 2019</span>
+  <p><a href="https://azure.microsoft.com/es-es/services/functions/">Azure Functions</a> es una solución de Microsoft para el procesamiento de datos, APIS y microservicios de computación sin servidor. Posee una serie de ventajas y características a tener en cuenta:</p>
+<ul>
+  <li>Ofrece una escalabilidad flexible basado en el volumen de trabajo.</li>
+  <li>Cuenta con un modelo de programación integrado basado en desencadenadores y enlaces que permiten conectarse a diferentes eventos.</li>
+  <li>Un repertorio de herramientas DevOps integradas, además de una experiencia de programación End-to-End que conduce desde el desarrollo y compilación hasta la depuración e integración continua además de la entrega continua (CI/CD).</li>
+</ul>
+
+<p>Se basa en una arquitectura Serverless basada en microservicios (“Funciones como servicio”), por lo que recomendable es dividir las funciones, que se regularán en función de la demanda. Por lo que es auto-escalado, pagamos por servicio y no nos obliga a gestionar la infraestructura.</p>
+
+<p><strong>Requisitos</strong></p>
+
+<p>Para hacer una demostración de cómo funciona Azure Functions con TypeScript y familiarizarnos con el entorno, vamos a necesitar las siguientes herramientas:</p>
+<ul>
+  <li>Visual Studio Code.</li>
+  <li>Extensión de <a href="https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions">Azure Functions</a> para VS Code.</li>
+  <li>Tener instalado <a href="https://nodejs.org/en/download/">Nodejs</a></li>
+</ul>
+
+<p>Posteriormente, debemos tener instalada la versión correspondiente de Azure Functions Core Tools que nos permitirá trabajar en local, conectarnos en nuestra cuenta de Azure y, además, desplegar nuestros function projects.</p>
+
+<p>Para ello, en MacOS utilizaremos el siguiente comando:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">brew tap azure/functions
+brew <span class="nb">install </span>azure-functions-core-tools@3</code></pre></figure>
+
+<p><strong>Creando un Functions project en local</strong></p>
+
+<p>El procedimiento para crear nuestro proyecto en local es bastante intuitivo, solo tendremos que ejecutar el siguiente comando:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">func init MyFunctionDemo</code></pre></figure>
+
+<p>Y seleccionar qué tipo de proyecto queremos crear, el asistente nos ofrecerá las siguientes opciones:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">Select a worker runtime:
+1. dotnet
+2. node
+3. python
+4. powershell
+Choose option: 2
+node
+Select a Language:
+1. javascript
+2. typescript
+Choose option: 2
+typescript</code></pre></figure>
+
+<p>Ello te generará un archivo package.json y tsconfig.json que te ayudarán a transcompilar todo el proyecto a JavaScript. Para comprobar que todo ha sido instalado correctamente debemos ejecutar el siguiente comando el el directorio donde tengamos el proyecto:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">func start</code></pre></figure>
+
+<p>Donde podremos comprobar que el servicio está corriendo en la dirección: http://0.0.0.0:7071</p>
+
+<p>Para crear nuestro primer ejemplo usaremos el comando:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">func new</code></pre></figure>
+
+<p>Se seleccionamos la octava opción: 8. HTTP trigger, nos generará un archivo index.ts con el siguiente código:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">import</span> <span class="p">{</span> <span class="nx">AzureFunction</span><span class="p">,</span> <span class="nx">Context</span><span class="p">,</span> <span class="nx">HttpRequest</span> <span class="p">}</span> <span class="k">from</span> <span class="s2">"@azure/functions"</span>
+
+<span class="kd">const</span> <span class="nx">httpTrigger</span><span class="p">:</span> <span class="nx">AzureFunction</span> <span class="o">=</span> <span class="k">async</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">context</span><span class="p">:</span> <span class="nx">Context</span><span class="p">,</span> <span class="nx">req</span><span class="p">:</span> <span class="nx">HttpRequest</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="k">void</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="nx">context</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'HTTP trigger function processed a request.'</span><span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">name</span> <span class="o">=</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">name</span> <span class="o">||</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span> <span class="o">&amp;&amp;</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">name</span><span class="p">));</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">context</span><span class="p">.</span><span class="nx">res</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="c1">// status: 200, /* Defaults to 200 */</span>
+            <span class="na">body</span><span class="p">:</span> <span class="s2">"Hello "</span> <span class="o">+</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">name</span> <span class="o">||</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+        <span class="p">};</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">context</span><span class="p">.</span><span class="nx">res</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="na">status</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+            <span class="na">body</span><span class="p">:</span> <span class="s2">"Please pass a name on the query string or in the request body"</span>
+        <span class="p">};</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">export</span> <span class="k">default</span> <span class="nx">httpTrigger</span><span class="p">;</span></code></pre></figure>
+
+<p>Si ejecutamos mediante consola los siguientes comandos:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">npm <span class="nb">install
+</span>npm start </code></pre></figure>
+
+<p>Debería darnos el siguiente output:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Found the following functions:
+Host.Functions.MyHttpTrigger
+
+Job host started
+Http Function MyHttpTrigger: http://localhost:7071/api/MyHttpTrigger</code></pre></figure>
+
+<p>De esta forma, podremos comprobar que la aplicación está perfectamente desplegada haciendo una petición a:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">curl <span class="nt">--get</span> http://localhost:7071/api/MyHttpTrigger?name<span class="o">=</span>Azure%20Mola</code></pre></figure>
+
+<p><strong>Desplegar la aplicación en Azure</strong></p>
+
+<p>Por último, para desplegar nuestra aplicación en Azure, debemos utilizar el siguiente comando:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">func azure functionapp publish &lt;FunctionAppName&gt;</code></pre></figure>
+
+<p>Este comando desplegará automáticamente tu Function en tu cuenta. Incluso podríamos configurar el entorno para desplegar nuestra aplicación en un <a href="https://docs.microsoft.com/en-us/azure/app-service/deploy-staging-slots">entorno de staging</a> o usar Circle-CI y JEST comprobar que todo está correcto antes de hacer push al branch de producción.</p>
+
+<p>Hasta aquí esta primera toma de contacto con TypeScript y Azure, sin duda habrá más posts similares en un futuro.</p>
+
+<p>Happy coding!</p>
+
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2019/11/17/typescript-37/">
+            Novedades en TypeScript 3.7
+            <small>17 Nov 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2019/07/28/typescript-vue/">
+            TypeScript + VueJs
+            <small>28 Jul 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2019/04/21/typescript-react/">
+            TypeScript + React
+            <small>21 Apr 2019</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+  </body>
+</html>

@@ -55,7 +55,7 @@ Lo primero que debemos mencionar es que, en términos de popularidad, actualment
 
 Como hemos visto Vue propone una gran solución con la premisa de que a veces, *menos, es más*. Vue es una gran herramienta, que te abre grandes posibilidades con muy poco, sobre todo si posees menos experiencia en el desarrollo en la parte del frontend. Por todo lo citado con anterioridad, diría que Vue se ajusta a tus necesidades si tienes un proyecto de pequeña o mediana escala, mientras que React estaría recomendado para grandes proyectos. Este post ha sido bastante introductorio, sin embargo, más adelante habrá una segunda parte con otro ejemplo más avanzado.
 
-Happy codding!
+Happy coding!
 
 
 

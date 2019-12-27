@@ -107,6 +107,127 @@
   
   <div class="post">
     <h1 class="post-title">
+      <a href="/2019/12/22/typescript-azure/">
+        Trabajando con Azure Functions y TypeScript
+      </a>
+    </h1>
+
+    <span class="post-date">22 Dec 2019</span>
+
+    <p><a href="https://azure.microsoft.com/es-es/services/functions/">Azure Functions</a> es una solución de Microsoft para el procesamiento de datos, APIS y microservicios de computación sin servidor. Posee una serie de ventajas y características a tener en cuenta:</p>
+<ul>
+  <li>Ofrece una escalabilidad flexible basado en el volumen de trabajo.</li>
+  <li>Cuenta con un modelo de programación integrado basado en desencadenadores y enlaces que permiten conectarse a diferentes eventos.</li>
+  <li>Un repertorio de herramientas DevOps integradas, además de una experiencia de programación End-to-End que conduce desde el desarrollo y compilación hasta la depuración e integración continua además de la entrega continua (CI/CD).</li>
+</ul>
+
+<p>Se basa en una arquitectura Serverless basada en microservicios (“Funciones como servicio”), por lo que recomendable es dividir las funciones, que se regularán en función de la demanda. Por lo que es auto-escalado, pagamos por servicio y no nos obliga a gestionar la infraestructura.</p>
+
+<p><strong>Requisitos</strong></p>
+
+<p>Para hacer una demostración de cómo funciona Azure Functions con TypeScript y familiarizarnos con el entorno, vamos a necesitar las siguientes herramientas:</p>
+<ul>
+  <li>Visual Studio Code.</li>
+  <li>Extensión de <a href="https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions">Azure Functions</a> para VS Code.</li>
+  <li>Tener instalado <a href="https://nodejs.org/en/download/">Nodejs</a></li>
+</ul>
+
+<p>Posteriormente, debemos tener instalada la versión correspondiente de Azure Functions Core Tools que nos permitirá trabajar en local, conectarnos en nuestra cuenta de Azure y, además, desplegar nuestros function projects.</p>
+
+<p>Para ello, en MacOS utilizaremos el siguiente comando:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">brew tap azure/functions
+brew <span class="nb">install </span>azure-functions-core-tools@3</code></pre></figure>
+
+<p><strong>Creando un Functions project en local</strong></p>
+
+<p>El procedimiento para crear nuestro proyecto en local es bastante intuitivo, solo tendremos que ejecutar el siguiente comando:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">func init MyFunctionDemo</code></pre></figure>
+
+<p>Y seleccionar qué tipo de proyecto queremos crear, el asistente nos ofrecerá las siguientes opciones:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">Select a worker runtime:
+1. dotnet
+2. node
+3. python
+4. powershell
+Choose option: 2
+node
+Select a Language:
+1. javascript
+2. typescript
+Choose option: 2
+typescript</code></pre></figure>
+
+<p>Ello te generará un archivo package.json y tsconfig.json que te ayudarán a transcompilar todo el proyecto a JavaScript. Para comprobar que todo ha sido instalado correctamente debemos ejecutar el siguiente comando el el directorio donde tengamos el proyecto:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">func start</code></pre></figure>
+
+<p>Donde podremos comprobar que el servicio está corriendo en la dirección: http://0.0.0.0:7071</p>
+
+<p>Para crear nuestro primer ejemplo usaremos el comando:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">func new</code></pre></figure>
+
+<p>Se seleccionamos la octava opción: 8. HTTP trigger, nos generará un archivo index.ts con el siguiente código:</p>
+
+<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="k">import</span> <span class="p">{</span> <span class="nx">AzureFunction</span><span class="p">,</span> <span class="nx">Context</span><span class="p">,</span> <span class="nx">HttpRequest</span> <span class="p">}</span> <span class="k">from</span> <span class="s2">"@azure/functions"</span>
+
+<span class="kd">const</span> <span class="nx">httpTrigger</span><span class="p">:</span> <span class="nx">AzureFunction</span> <span class="o">=</span> <span class="k">async</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">context</span><span class="p">:</span> <span class="nx">Context</span><span class="p">,</span> <span class="nx">req</span><span class="p">:</span> <span class="nx">HttpRequest</span><span class="p">):</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="k">void</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="nx">context</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'HTTP trigger function processed a request.'</span><span class="p">);</span>
+    <span class="kd">const</span> <span class="nx">name</span> <span class="o">=</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">name</span> <span class="o">||</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">body</span> <span class="o">&amp;&amp;</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">name</span><span class="p">));</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">context</span><span class="p">.</span><span class="nx">res</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="c1">// status: 200, /* Defaults to 200 */</span>
+            <span class="na">body</span><span class="p">:</span> <span class="s2">"Hello "</span> <span class="o">+</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">name</span> <span class="o">||</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span>
+        <span class="p">};</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">context</span><span class="p">.</span><span class="nx">res</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="na">status</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+            <span class="na">body</span><span class="p">:</span> <span class="s2">"Please pass a name on the query string or in the request body"</span>
+        <span class="p">};</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="k">export</span> <span class="k">default</span> <span class="nx">httpTrigger</span><span class="p">;</span></code></pre></figure>
+
+<p>Si ejecutamos mediante consola los siguientes comandos:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">npm <span class="nb">install
+</span>npm start </code></pre></figure>
+
+<p>Debería darnos el siguiente output:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">Found the following functions:
+Host.Functions.MyHttpTrigger
+
+Job host started
+Http Function MyHttpTrigger: http://localhost:7071/api/MyHttpTrigger</code></pre></figure>
+
+<p>De esta forma, podremos comprobar que la aplicación está perfectamente desplegada haciendo una petición a:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">curl <span class="nt">--get</span> http://localhost:7071/api/MyHttpTrigger?name<span class="o">=</span>Azure%20Mola</code></pre></figure>
+
+<p><strong>Desplegar la aplicación en Azure</strong></p>
+
+<p>Por último, para desplegar nuestra aplicación en Azure, debemos utilizar el siguiente comando:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">func azure functionapp publish &lt;FunctionAppName&gt;</code></pre></figure>
+
+<p>Este comando desplegará automáticamente tu Function en tu cuenta. Incluso podríamos configurar el entorno para desplegar nuestra aplicación en un <a href="https://docs.microsoft.com/en-us/azure/app-service/deploy-staging-slots">entorno de staging</a> o usar Circle-CI y JEST comprobar que todo está correcto antes de hacer push al branch de producción.</p>
+
+<p>Hasta aquí esta primera toma de contacto con TypeScript y Azure, sin duda habrá más posts similares en un futuro.</p>
+
+<p>Happy coding!</p>
+
+
+  </div>
+  
+  <div class="post">
+    <h1 class="post-title">
       <a href="/2019/11/17/typescript-37/">
         Novedades en TypeScript 3.7
       </a>
@@ -165,7 +286,7 @@
 
 <p>Estas serían las tres grandes novedades que presenta esta versión de TypeScript, no obstante, para obtener información más detallada, como he citado anteriormente, <a href="https://devblogs.microsoft.com/typescript/announcing-typescript-3-7-beta/">podéis consultar directamente el post oficial del anuncio</a> donde se incluyen todas sus nuevas características entre las que se encuentra la posibilidad de usar <span style="color:red">–declaration and –allowJs</span> conjuntamente (lo que facilitará la migración de tu proyecto a TypeScript) o el uso de <span style="color:red">Recursive Type Aliases</span>, aunque en un futuro analizaremos más detalladamente alguna de ellas.</p>
 
-<p>Happy codding!</p>
+<p>Happy coding!</p>
 
   </div>
   
@@ -228,7 +349,7 @@ vue create my-project-name</code></pre></figure>
 
 <p>Como hemos visto Vue propone una gran solución con la premisa de que a veces, <em>menos, es más</em>. Vue es una gran herramienta, que te abre grandes posibilidades con muy poco, sobre todo si posees menos experiencia en el desarrollo en la parte del frontend. Por todo lo citado con anterioridad, diría que Vue se ajusta a tus necesidades si tienes un proyecto de pequeña o mediana escala, mientras que React estaría recomendado para grandes proyectos. Este post ha sido bastante introductorio, sin embargo, más adelante habrá una segunda parte con otro ejemplo más avanzado.</p>
 
-<p>Happy codding!</p>
+<p>Happy coding!</p>
 
 
   </div>
@@ -367,199 +488,6 @@ TypeScript error: Type <span class="s1">'string'</span> is not assignable to <sp
 <p>Todo el proceso comienza con el procesamiento de todos los archivos ubicados en <span style="color:red">/// &lt;reference path=… /&gt;</span> e <span style="color:red">import</span>. Como hemos mencionado con anterioridad, el parser crea los nodos, que no es más que una representación abstracta del input que ha procesado en formato de árbol. Una vez hecho, se generan los <span style="color:red">Symbol</span>s. Cada Symbol es creado para identificar cada uno de los elementos procesados, pudiendo tener el mismo nombre, pero diferente alcance. Al ser generados, se crea un <em>SourceFile</em> mediante el uso de la API <em>createSourceFile</em>. Por lo que un programa es, básicamente, un conjunto de SourceFiles junto con una configuración de compilación (<em>CompilerOptions</em>). Cuando el programa se ha instanciado, entra en acción el <em>TypeChecker</em>, que es el core del compilador. Entre sus funciones, se encuentra: recopilar todos los símbolos creados en los diferentes SourceFiles, mergearlo en una unidad y determinar su tipo, para localizar errores. Estando todo validado, el <em>Emitter</em> genera el output, archivos de tipo .js, .jsx, .d.ts, y .js.map (recuerda que el compilador de TypeScript, transcompila todo a JavaScript).</p>
 
 <p>Sin más, el propósito de este post solo era echar un pequeño vistazo a la capa más superficial del compilador, si quieres ver cómo sería el resultado del AST que hemos mencionado, podéis echarle un vistazo al siguiente <a href="https://ts-ast-viewer.com">enlace</a>. Por otro lado, para interactuar con la API que el mismo compilador proporciona, podéis también echarle un ojo a <a href="https://github.com/dsherret/ts-morph">ts-morph</a>, un proyecto que nos permitirá leer y manipular el AST.</p>
-
-<p>Happy coding!</p>
-
-
-  </div>
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2019/01/14/Introduccio-n-a-typescript-dos/">
-        Introducción a TypeScript (segunda parte)
-      </a>
-    </h1>
-
-    <span class="post-date">14 Jan 2019</span>
-
-    <p>En esta segunda parte de introducción a TypeScript me gustaría seguir abordando algunos conceptos o características del lenguaje que me resultan interesante. En la primera parte, se introdujeron de manera muy elemental los elementos más básicos. Hicimos énfasis en los tipos básicos y la orientación del lenguaje al paradigma de programación basado en objetos. También se mencionó por qué usar TypeScript en detrimento de otras tecnologías. Dicho esto, sigamos analizando más características:</p>
-
-<p><strong>Módulos</strong></p>
-
-<p>Introducido con ECMAScript 2015. Permite exportar (<span style="color:red">export</span>) e importar (<span style="color:red">import</span>) clases, funciones o variables de un proyecto a otro, es decir, proporciona visibilidad. En el siguiente ejemplo se muestra algunas de sus posibilidades:</p>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="k">export</span> <span class="kr">interface</span> <span class="nx">StringValidator</span> <span class="p">{</span>
-    <span class="nx">isAcceptable</span><span class="p">(</span><span class="nx">s</span><span class="p">:</span> <span class="nx">string</span><span class="p">):</span> <span class="kr">boolean</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="k">export</span> <span class="kd">const</span> <span class="nx">numberRegexp</span> <span class="o">=</span> <span class="sr">/^</span><span class="se">[</span><span class="sr">0-9</span><span class="se">]</span><span class="sr">+$/</span><span class="p">;</span>
-
-<span class="k">export</span> <span class="kd">class</span> <span class="nx">ZipCodeValidator</span> <span class="kr">implements</span> <span class="nx">StringValidator</span> <span class="p">{</span>
-    <span class="nx">isAcceptable</span><span class="p">(</span><span class="nx">s</span><span class="p">:</span> <span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="nx">s</span><span class="p">.</span><span class="nx">length</span> <span class="o">===</span> <span class="mi">5</span> <span class="o">&amp;&amp;</span> <span class="nx">numberRegexp</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">s</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">import</span> <span class="p">{</span> <span class="nx">ZipCodeValidator</span> <span class="p">}</span> <span class="k">from</span> <span class="s2">"./ZipCodeValidator"</span><span class="p">;</span>
-
-<span class="kd">let</span> <span class="nx">myValidator</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ZipCodeValidator</span><span class="p">();</span></code></pre></figure>
-
-<p><strong>Decorators</strong></p>
-
-<p>Son funciones que pueden ser usadas para hacer anotaciones sobre clases, variables o métodos (inyección de dependencias, unit test, etcétera). También son usadas para generar metadatos, que pueden usarse por otras librerías con posterioridad. Básicamente, es una función que recibe un constructor. Veamos un sencillo ejemplo de ello, declarando el siguiente decorador:</p>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="kd">function</span> <span class="nx">logType</span><span class="p">(</span><span class="nx">target</span> <span class="p">:</span> <span class="nx">any</span><span class="p">,</span> <span class="nx">key</span> <span class="p">:</span> <span class="nx">string</span><span class="p">)</span> <span class="p">{</span>
-      <span class="kd">var</span> <span class="nx">t</span> <span class="o">=</span> <span class="nb">Reflect</span><span class="p">.</span><span class="nx">getMetadata</span><span class="p">(</span><span class="s2">"design:type"</span><span class="p">,</span> <span class="nx">target</span><span class="p">,</span> <span class="nx">key</span><span class="p">);</span>
-      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`</span><span class="p">${</span><span class="nx">key</span><span class="p">}</span><span class="s2"> type: </span><span class="p">${</span><span class="nx">t</span><span class="p">.</span><span class="nx">name</span><span class="p">}</span><span class="s2">`</span><span class="p">);</span>
-    <span class="p">}</span></code></pre></figure>
-
-<p>Una vez definido, podemos emplearlo de la siguiente manera:</p>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js">  <span class="kd">class</span> <span class="nx">Demo</span><span class="p">{</span> 
-      <span class="p">@</span><span class="nd">logType</span> <span class="c1">// apply property decorator</span>
-      <span class="kr">public</span> <span class="nx">attr1</span> <span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
-    <span class="p">}</span></code></pre></figure>
-
-<p>Mostrándose así el siguiente mensaje por consola:</p>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="nx">attr1</span> <span class="nx">type</span><span class="p">:</span> <span class="nb">String</span></code></pre></figure>
-
-<p>Se trata de un ejemplo bastante básico y sencillo de su uso. En un futuro dedicaré un post aparte solo a este apartado.</p>
-
-<p><strong>Generators</strong></p>
-
-<p>Usa la sintaxis <span style="color:red">function*</span> para ser creado. Devuelve un generator object. Siguen la interfaz iterator. Por tanto, provee los siguientes métodos: <em>next</em>, <em>return</em> y <em>throw</em>.</p>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="kd">function</span><span class="o">*</span> <span class="nx">idMaker</span><span class="p">(){</span>
-  <span class="kd">let</span> <span class="nx">index</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-  <span class="k">while</span><span class="p">(</span><span class="nx">index</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="k">yield</span> <span class="nx">index</span><span class="o">++</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">let</span> <span class="nx">gen</span> <span class="o">=</span> <span class="nx">idMaker</span><span class="p">();</span>
-
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">gen</span><span class="p">.</span><span class="nx">next</span><span class="p">());</span> <span class="c1">// { value: 0, done: false }</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">gen</span><span class="p">.</span><span class="nx">next</span><span class="p">());</span> <span class="c1">// { value: 1, done: false }</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">gen</span><span class="p">.</span><span class="nx">next</span><span class="p">());</span> <span class="c1">// { value: 2, done: false }</span>
-<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">gen</span><span class="p">.</span><span class="nx">next</span><span class="p">());</span> <span class="c1">// { done: true }</span></code></pre></figure>
-
-<p>Devuelve junto con un resultado el estado de la iteración, si termina devuelve <em>false</em> y en caso contrario <em>true</em>.</p>
-
-<p><strong>Asyc/Await</strong></p>
-
-<p>Introducido en la versión 1.7, permite escribir código asíncrono. Con <span style="color:red">async</span> declaramos la función asíncrona, que devuelve una <span style="color:red">promise</span>, mientras que el operador  <span style="color:red">await</span> es usado para esperar dicha <span style="color:red">promise</span>.</p>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="c1">// printDelayed is a 'Promise&lt;void&gt;'</span>
-<span class="k">async</span> <span class="kd">function</span> <span class="nx">printDelayed</span><span class="p">(</span><span class="nx">elements</span><span class="p">:</span> <span class="nx">string</span><span class="p">[])</span> <span class="p">{</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kd">const</span> <span class="nx">element</span> <span class="k">of</span> <span class="nx">elements</span><span class="p">)</span> <span class="p">{</span>
-        <span class="kr">await</span> <span class="nx">delay</span><span class="p">(</span><span class="mi">400</span><span class="p">);</span>
-        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">element</span><span class="p">);</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="k">async</span> <span class="kd">function</span> <span class="nx">delay</span><span class="p">(</span><span class="nx">milliseconds</span><span class="p">:</span> <span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nb">Promise</span><span class="o">&lt;</span><span class="k">void</span><span class="o">&gt;</span><span class="p">(</span><span class="nx">resolve</span> <span class="o">=&gt;</span> <span class="p">{</span>
-        <span class="nx">setTimeout</span><span class="p">(</span><span class="nx">resolve</span><span class="p">,</span> <span class="nx">milliseconds</span><span class="p">);</span>
-    <span class="p">});</span>
-<span class="p">}</span>
-
-<span class="nx">printDelayed</span><span class="p">([</span><span class="s2">"Hello"</span><span class="p">,</span> <span class="s2">"beautiful"</span><span class="p">,</span> <span class="s2">"asynchronous"</span><span class="p">,</span> <span class="s2">"world"</span><span class="p">]).</span><span class="nx">then</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">();</span>
-    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">"Printed every element!"</span><span class="p">);</span>
-<span class="p">});</span></code></pre></figure>
-
-<p>En el ejemplo anterior, cada input será pintado cada 400 milisegundos.</p>
-
-<p><strong>Generics</strong></p>
-
-<p>Permite diseñar clases y métodos que aplazan la especificación de uno o varios tipos hasta que el código declare y cree una instancia de dicha clase o método.</p>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="cm">/** A class definition with a generic parameter */</span>
-<span class="kd">class</span> <span class="nx">Queue</span><span class="o">&lt;</span><span class="nx">T</span><span class="o">&gt;</span> <span class="p">{</span>
-  <span class="kr">private</span> <span class="nx">data</span> <span class="o">=</span> <span class="p">[];</span>
-  <span class="nx">push</span> <span class="o">=</span> <span class="p">(</span><span class="na">item</span><span class="p">:</span> <span class="nx">T</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
-  <span class="nx">pop</span> <span class="o">=</span> <span class="p">():</span> <span class="nx">T</span> <span class="o">=&gt;</span> <span class="k">this</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">shift</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="kd">const</span> <span class="nx">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Queue</span><span class="o">&lt;</span><span class="nx">number</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="nx">queue</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-<span class="nx">queue</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="s2">"1"</span><span class="p">);</span> <span class="c1">// ERROR : cannot push a string. Only numbers allowed</span>
-
-<span class="c1">// ^ if that error is fixed the rest would be fine too</span></code></pre></figure>
-
-<p><strong>Union &amp; Intersection types</strong></p>
-
-<p>Entramos en los tipos más avanzados. Los tipo <em>Intersection</em> pueden combinar más de un tipo y see usan mediante <span style="color:red">&amp;</span>. Por otro lado, la <em>Union</em> son entidades que pueden ser de un tipo u otro, dependiendo de su propósito. Dicha Union se representa mediante el símbolo <span style="color:red">|</span>. Veámoslo con un ejemplo:</p>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="kr">interface</span> <span class="nx">Bird</span> <span class="p">{</span>
-    <span class="nx">fly</span><span class="p">();</span>
-    <span class="nx">layEggs</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="kr">interface</span> <span class="nx">Fish</span> <span class="p">{</span>
-    <span class="nx">swim</span><span class="p">();</span>
-    <span class="nx">layEggs</span><span class="p">();</span>
-<span class="p">}</span>
-
-<span class="c1">//Union (objects wich are either A or B)</span>
-<span class="nx">declare</span> <span class="kd">var</span> <span class="nx">pet1</span><span class="p">:</span> <span class="nx">fish</span> <span class="o">|</span> <span class="nx">bird</span><span class="p">;</span>
-
-<span class="nx">pet1</span><span class="p">.</span><span class="nx">layEggs</span><span class="p">();</span> <span class="c1">// Ok</span>
-<span class="nx">pet1</span><span class="p">.</span><span class="nx">swim</span><span class="p">();</span> <span class="c1">// ERROR: Property swim does not exist on type 'Bird'</span>
-
-<span class="c1">//Intersection  (objects wich are both A and B)</span>
-<span class="nx">declare</span> <span class="kd">var</span> <span class="nx">pet2</span><span class="p">:</span> <span class="nx">fish</span> <span class="o">&amp;</span> <span class="nx">bird</span><span class="p">;</span>
-
-<span class="nx">pet2</span><span class="p">.</span><span class="nx">layEggs</span><span class="p">();</span> <span class="c1">// Ok</span>
-<span class="nx">pet2</span><span class="p">.</span><span class="nx">swim</span><span class="p">();</span> <span class="c1">// Ok</span></code></pre></figure>
-
-<p>Como vemos, en la intersección al invocar un método u otro, ambos serán válidos ya que <em>pet2</em> puede ser de tipo <em>fish</em> y <em>bird</em>. No obstante, no sucede lo mismo con <em>pet1</em>, ya que el método swim() no sabemos si estamos haciendo referencia a una entidad tipo <em>Fish</em> o <em>Bird</em> (si fuese ‘Bird’ provocaríamos un error al llamarlo).</p>
-
-<p><strong>Control Flow Analysis &amp; Type Guards</strong></p>
-
-<p>Existen dos tipos de programadores: los que les gusta que los lenguajes sean fuertemente tipados y los que no. Para los que preferimos el primer caso, TypeScript proporciona herramientas para evitar problemas de mutabilidad. En primer lugar, el <em>control flow</em> analiza el flujo del programa para determinar de la manera más exacta el tipo de una variable que es declarado como Union Type. Un ejemplo:</p>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="kd">let</span> <span class="nx">command</span><span class="p">:</span> <span class="nx">string</span> <span class="o">|</span> <span class="nx">string</span><span class="p">[];</span>
-
-<span class="nx">command</span> <span class="o">=</span> <span class="s2">"pwd"</span><span class="p">;</span>
-<span class="nx">command</span><span class="p">.</span><span class="nx">toUpperCase</span><span class="p">;</span> <span class="c1">// Here, command is of type 'string'</span>
-
-<span class="nx">command</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"ls"</span><span class="p">,</span> <span class="s2">"-la"</span><span class="p">];</span>
-<span class="nx">command</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">" "</span><span class="p">);</span> <span class="c1">// Here, command is of type 'string[]'</span></code></pre></figure>
-
-<p>En el primer caso, declaramos command como una variable de tipo String, por tanto, el compilador entenderá como siempre tendrá que tratarlo como tal, de modo que podremos invocar el método toUpperCase() para convertirlo en mayúscula. Por otro lado, si volvemos a declarar la misma variable como String[], ya dejará de ser tratado como String.</p>
-
-<p>Además, esto nos permite limitar el tipo de un objeto dentro de un bloque condicional, por ejemplo:</p>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="kd">function</span> <span class="nx">composeCommand</span><span class="p">(</span>
-  <span class="nx">command</span><span class="p">:</span> <span class="nx">string</span> <span class="o">|</span> <span class="nx">string</span><span class="p">[]</span>
-<span class="p">):</span> <span class="nx">string</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">command</span> <span class="o">===</span> <span class="s2">"string"</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">command</span><span class="p">;</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="nx">command</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">" "</span><span class="p">);</span>
-<span class="p">}</span></code></pre></figure>
-
-<p>En este caso, tenemos una función que puede recibir un tipo String o String[] y en la que vamos a determinar su comportamiento en función del tipo, algo muy útil en términos de seguridad.</p>
-
-<p>Respecto a los Type Guards, es una expresión que realiza una verificación en tiempo de ejecución para garantizar el tipo en algún contexto y que se puede analizar en el Control Flow para ser lo más específico posible. Imaginemos que tenemos una aplicación para gestionar un videoclub en la que tenemos clientes de dos tipos: free o premium.</p>
-
-<figure class="highlight"><pre><code class="language-js" data-lang="js"><span class="kd">function</span> <span class="nx">isUserPremiumUser</span><span class="p">(</span><span class="nx">user</span><span class="p">:</span><span class="nx">User</span><span class="p">):</span> <span class="nx">user</span> <span class="nx">is</span> <span class="nx">PremiumUser</span><span class="p">{</span>
-    <span class="k">return</span> <span class="nx">user</span><span class="p">.</span><span class="nx">plan</span><span class="o">===</span> <span class="s1">'premium'</span><span class="p">;</span>
-<span class="p">}</span>
-
-<span class="kd">function</span> <span class="nx">getUserEmailRecapFrequency</span><span class="p">(</span><span class="nx">user</span><span class="p">:</span><span class="nx">User</span><span class="p">):</span> <span class="nx">number</span><span class="p">{</span>
-    <span class="k">if</span><span class="p">(</span><span class="nx">isPremiumUser</span><span class="p">(</span><span class="nx">user</span><span class="p">)){</span>
-        <span class="k">return</span> <span class="nx">user</span><span class="p">.</span><span class="nx">customization</span><span class="p">.</span><span class="nx">recap_freq</span><span class="p">;</span>
-    <span class="p">}</span><span class="k">else</span><span class="p">{</span>
-        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span></code></pre></figure>
-
-<p>Aquí indicamos que si el usuario es premium, lo devuelva como tal y, además, actúe de una manera determinada (return user.customization.recap_freq;), sino que devuelva -1. TypeScript, <em>lenguaje fuertemente tipado</em>.</p>
-
-<p>Esto es todo por ahora, pero hay <a href="https://github.com/Microsoft/TypeScript/wiki/Roadmap">mucho más</a>. Poco a poco iremos abordando, de forma más concreta, cada una de sus características. Espero que os haya resultado útil.</p>
 
 <p>Happy coding!</p>
 
