@@ -4,7 +4,7 @@
  <title>ChristianIvanov</title>
  <link href="http://localhost:4000/atom.xml" rel="self"/>
  <link href="http://localhost:4000/"/>
- <updated>2019-12-27T17:25:44+01:00</updated>
+ <updated>2019-12-27T17:30:58+01:00</updated>
  <id>http://localhost:4000</id>
  <author>
    <name>Christian Ivanov</name>
@@ -14,9 +14,9 @@
  
  <entry>
    <title>Trabajando con Azure Functions y TypeScript</title>
-   <link href="http://localhost:4000/2019/12/22/typescript-azure/"/>
-   <updated>2019-12-22T00:00:00+01:00</updated>
-   <id>http://localhost:4000/2019/12/22/typescript-azure</id>
+   <link href="http://localhost:4000/2019/12/27/typescript-azure/"/>
+   <updated>2019-12-27T00:00:00+01:00</updated>
+   <id>http://localhost:4000/2019/12/27/typescript-azure</id>
    <content type="html">&lt;p&gt;&lt;a href=&quot;https://azure.microsoft.com/es-es/services/functions/&quot;&gt;Azure Functions&lt;/a&gt; es una solución de Microsoft para el procesamiento de datos, APIS y microservicios de computación sin servidor. Posee una serie de ventajas y características a tener en cuenta:&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;Ofrece una escalabilidad flexible basado en el volumen de trabajo.&lt;/li&gt;
